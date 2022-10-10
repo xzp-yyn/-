@@ -1,19 +1,20 @@
 package org.xzp.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.DigestUtils;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.xzp.common.R;
 import org.xzp.entity.Employee;
 import org.xzp.service.EmployeeService;
 
+import javax.servlet.ServletRequest;
 import javax.servlet.http.HttpSession;
-import java.text.SimpleDateFormat;
-import java.time.LocalDateTime;
 import java.util.Date;
 
 /**
@@ -75,4 +76,31 @@ public class EmployeeController {
         return R.success("员工添加成功！");
     }
 
+    /**
+     * 查询所有员工 employee/page
+     * @return
+     */
+    @GetMapping("/page")
+    public R<IPage> employeePage(@RequestParam(value = "page",defaultValue = "1")Integer page,
+                                 @RequestParam("pageSize")Integer size,String name){
+        LambdaQueryWrapper<Employee> wrapper = new LambdaQueryWrapper<>();
+        wrapper.like(StringUtils.isNotEmpty(name),Employee::getName,name);
+        wrapper.orderByDesc(Employee::getUpdateTime);
+        Page<Employee> page1 = service.page(new Page<>(page, size), wrapper);
+        return R.success(page1);
+    }
+
+    @GetMapping("/{id}")
+    public R<Employee> update(@PathVariable("id")Long id){
+        Employee employee = service.getById(id);
+        return R.success(employee);
+    }
+
+    @PutMapping
+    public R<String> changeStatus(@RequestBody Employee employee,HttpSession session){
+        Long user = (Long) session.getAttribute("employee");
+        employee.setUpdateUser(user);
+        service.updateById(employee);
+        return R.success("修改状态成功！");
+    }
 }
