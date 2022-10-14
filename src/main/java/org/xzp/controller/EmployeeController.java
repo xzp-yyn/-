@@ -64,14 +64,9 @@ public class EmployeeController {
     @PostMapping
     public R<String> addmember(@RequestBody Employee employee,HttpSession session){
 
-        employee.setCreateTime(new Date());
         //默认密码123456
         employee.setPassword(DigestUtils.md5DigestAsHex("123456".getBytes()));
 
-        employee.setUpdateTime(new Date());
-        Long user = (Long) session.getAttribute("employee");
-        employee.setUpdateUser(user);
-        employee.setCreateUser(user);
         service.save(employee);
         return R.success("员工添加成功！");
     }
@@ -98,8 +93,6 @@ public class EmployeeController {
 
     @PutMapping
     public R<String> changeStatus(@RequestBody Employee employee,HttpSession session){
-        Long user = (Long) session.getAttribute("employee");
-        employee.setUpdateUser(user);
         service.updateById(employee);
         return R.success("修改状态成功！");
     }

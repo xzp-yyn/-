@@ -13,4 +13,12 @@ function loginoutApi() {
   })
 }
 
+function sendCodeApi(data) {
+    return $axios({
+        'url':'/user/sendCode',
+        'method':'post',
+        data
+    })
+}
+
   

@@ -29,7 +29,10 @@ public class EmployeeTest {
     void test(){
 //        List<Employee> list = service.list();
 //        System.out.println(list.get(0).getPassword());
-        IPage page2 = service.page(new Page<>(1,10));
-        System.out.println(page2.getRecords());
+//        IPage page2 = service.page(new Page<>(1,10));
+//        System.out.println(page2.getRecords());
+        String s = System.getProperty("user.dir"+"\\src\\main\\resources\\static\\common\\");
+        System.out.println(s);
+//        D:\Ruigi\src\main\resources\static\common
     }
 }

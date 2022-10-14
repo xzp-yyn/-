@@ -2,6 +2,8 @@ package org.xzp.filter;
 
 import com.alibaba.fastjson.JSON;
 import org.springframework.util.AntPathMatcher;
+import org.xzp.common.FillThreadLocal;
+import org.xzp.common.MetaObjectHandl;
 import org.xzp.common.R;
 
 import javax.servlet.*;
@@ -21,7 +23,12 @@ public class LoginFilter implements Filter {
     private static final String[] pattern=new String[]{
             "/employee/login",
             "/employee/logout",
-            "/backend/**"
+            "/backend/**",
+            "/common/**",
+            "/front/**",
+            "/user/login",
+            "/user/loginout",
+            "/user/sendCode"
     };
 
     private AntPathMatcher pathMatcher=new AntPathMatcher();
@@ -39,7 +46,17 @@ public class LoginFilter implements Filter {
                 return;
             }
         }
+        //判断员工是否登录
         if(request.getSession().getAttribute("employee")!=null){
+            Long user = (Long) request.getSession().getAttribute("employee");
+            FillThreadLocal.setvalue(user);
+            filterChain.doFilter(request,response);
+            return;
+        }
+
+        if(request.getSession().getAttribute("user")!=null){
+            Long userId = (Long) request.getSession().getAttribute("user");
+            FillThreadLocal.setvalue(userId);
             filterChain.doFilter(request,response);
             return;
         }
