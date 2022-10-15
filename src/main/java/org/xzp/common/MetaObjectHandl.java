@@ -17,6 +17,7 @@ import java.util.Date;
  */
 @Component
 public class MetaObjectHandl implements MetaObjectHandler {
+    //插入时必须同时拥有这四个属性，否则报错
     @Override
     public void insertFill(MetaObject metaObject) {
         metaObject.setValue("createTime",new Date());

@@ -8,6 +8,7 @@ import org.xzp.common.R;
 import org.xzp.entity.ShoppingCart;
 import org.xzp.service.ShoppingCartService;
 
+import java.util.Date;
 import java.util.List;
 /**
  * @Author xuezhanpeng
@@ -49,6 +50,8 @@ public class ShoppingCartController {
             cartService.updateById(one);
         }else {
             shoppingCart.setNumber(1);
+            //不能使用@TableField来填充会报错
+            shoppingCart.setCreateTime(new Date());
             cartService.save(shoppingCart);
             one=shoppingCart;
         }

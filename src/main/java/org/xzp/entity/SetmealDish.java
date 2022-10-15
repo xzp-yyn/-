@@ -57,7 +57,6 @@ public class SetmealDish implements Serializable {
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date updateTime;
 
-
     @TableField(fill = FieldFill.INSERT)
     private Long createUser;
 
