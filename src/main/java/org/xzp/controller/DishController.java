@@ -8,6 +8,7 @@ import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.xzp.common.R;
@@ -23,6 +24,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
@@ -46,6 +48,9 @@ public class DishController {
 
     @Autowired
     private  CategoryService categoryService;
+
+    @Autowired
+    private RedisTemplate<String,Object> template;
 
     @GetMapping("/page")
     public R<Page> dishs(int page, @RequestParam("pageSize")int pagesize,String name){
@@ -77,15 +82,20 @@ public class DishController {
              ids) {
             one = service.getById(id);
             one.setStatus(s);
+            String key="dish:"+one.getCategoryId()+":1";
+            template.delete(key);
             dishs.add(one);
         }
         service.updateBatchById(dishs);
+
         return R.success("修改状态成功！");
     }
 
     @PostMapping
     public R<String> saveandFlavor(@RequestBody DishDto dishDto){
         service.saveAndFlavor(dishDto);
+        String key="dish:"+dishDto.getCategoryId()+":1";
+        template.delete(key);
         return R.success("添加菜品成功！");
     }
 
@@ -97,11 +107,20 @@ public class DishController {
 
     @GetMapping("/list")
     public R<List<DishDto>> dishCategory(Dish dish){
+        List<DishDto> dishDtos=null;
+        String key="dish:"+dish.getCategoryId()+":"+dish.getStatus();
+        //首先查询redis
+        dishDtos= (List<DishDto>) template.opsForValue().get(key);
+        if(dishDtos!=null){
+            //如果有直接返回
+            return R.success(dishDtos);
+        }
+        //没有数据就从数据库查并放到缓存，设置过期时间
         LambdaQueryWrapper<Dish> wrapper = new LambdaQueryWrapper<>();
         wrapper.eq(dish.getCategoryId()!=null,Dish::getCategoryId,dish.getCategoryId());
         wrapper.eq(Dish::getStatus,1);
         List<Dish> list = service.list(wrapper);
-        List<DishDto> dishDtos= list.stream().map((item)->{
+        dishDtos= list.stream().map((item)->{
             DishDto dishDto = new DishDto();
             BeanUtils.copyProperties(item,dishDto);
             Long id = item.getId();
@@ -111,7 +130,7 @@ public class DishController {
             dishDto.setFlavors(dishFlavors);
             return dishDto;
         }).collect(Collectors.toList());
-
+        template.opsForValue().set(key,dishDtos,120,TimeUnit.MINUTES);
         return R.success(dishDtos);
     }
 
@@ -121,8 +140,11 @@ public class DishController {
         List<Long> longs = Arrays.asList(ids);
         for (Long item:
              longs) {
-            String image = service.getById(item).getImage();
+            Dish dish = service.getById(item);
+            String image = dish.getImage();
             String url=baseurl+image;
+            String key="dish:"+dish.getCategoryId()+":1";
+            template.delete(key);
             File file = new File(url);
             if(file.exists()){
                 file.delete();
@@ -135,6 +157,8 @@ public class DishController {
     @PutMapping
     public R<String> update(@RequestBody DishDto dishDto){
         service.updateAndFlavor(dishDto);
+        String key="dish:"+dishDto.getCategoryId()+":1";
+        template.delete(key);
         return R.success("更新成功！");
     }
 }

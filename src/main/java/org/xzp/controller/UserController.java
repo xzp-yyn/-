@@ -79,6 +79,7 @@ public class UserController {
                 service.save(user2);
             }
             session.setAttribute("user",user2.getId());
+            template.delete(key);
             return R.success(user2);
         }
         return R.error("验证失败！");
