@@ -3,6 +3,11 @@ server:
 spring:
   application:
     name: ruiji
+  redis:
+    database: 0
+    url: 192.168.107.214
+    port: 6379
+    password: 201014
   datasource:
     druid:
       driver-class-name: com.mysql.cj.jdbc.Driver
