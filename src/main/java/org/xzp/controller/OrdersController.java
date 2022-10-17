@@ -3,6 +3,8 @@ package org.xzp.controller;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.time.DateFormatUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -14,6 +16,8 @@ import org.xzp.entity.Orders;
 import org.xzp.service.OrderDetailService;
 import org.xzp.service.OrdersService;
 
+import java.text.DateFormat;
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -63,5 +67,24 @@ public class OrdersController {
         BeanUtils.copyProperties(ordersPage,dtoPage,"records");
         dtoPage.setRecords(ordersDtos);
         return R.success(dtoPage);
+    }
+
+    @GetMapping("/page")
+    public R<Page> ordershow(int page, Integer pageSize, Long number, String beginTime,
+                             String endTime){
+        Page<Orders> page1 = new Page<>(page, pageSize);
+        LambdaQueryWrapper<Orders> wrapper = new LambdaQueryWrapper<>();
+        wrapper.orderByAsc(Orders::getOrderTime);
+        wrapper.like(number!=null,Orders::getNumber,number);
+        wrapper.apply(beginTime!=null,"UNIX_TIMESTAMP(order_time) >= UNIX_TIMESTAMP('" + beginTime + "')");
+        wrapper.apply(endTime!=null,"UNIX_TIMESTAMP(checkout_time) <= UNIX_TIMESTAMP('" + endTime + "')");
+        orderService.page(page1,wrapper);
+        return R.success(page1);
+    }
+
+    @PutMapping
+    public R<String> changeStatus(@RequestBody Orders orders){
+        orderService.updateById(orders);
+        return R.success("状态更新完成！");
     }
 }

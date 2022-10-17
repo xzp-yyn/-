@@ -58,7 +58,7 @@ public class UserController {
                 return R.success("验证码已产生，请勿重复获取");
             }
         }else {
-            return R.success(msg);
+            return R.error(msg);
         }
     }
 

@@ -20,6 +20,7 @@
       </head>
     <body>
         <div id="login" v-loading="loading">
+
             <div class="divHead">登录</div>
             <div class="divContainer">
                 <el-input placeholder=" 请输入手机号码" v-model="form.phone"  maxlength='20'/></el-input>
@@ -43,7 +44,6 @@
         <script src="./../js/jquery-3.6.0.min.js"></script>
     </body>
     <script>
-
         new Vue({
             el:"#login",
             data(){
@@ -59,15 +59,17 @@
             computed:{},
             created(){},
             mounted(){},
+
             methods:{
                 sendCode() {
                     var timer_num = 60;
                     timeClock = setInterval(function () {
                         timer_num--;
                         $('.get').html(timer_num + "秒后失效");
+                        $('.get').css('pointer-events','none')
                         if (timer_num == 0) {
                             clearInterval(timeClock);
-                            $('.get').removeAttr('disabled', 'true')
+                            $('.get').css('pointer-events','auto')
                             $('.get').html("重新获取验证码");
                         }
                     }, 1000)
@@ -77,9 +79,25 @@
                     const regex = /^(13[0-9]{9})|(15[0-9]{9})|(17[0-9]{9})|(18[0-9]{9})|(19[0-9]{9})$/;
                     if (regex.test(this.form.phone)) {
                         this.msgFlag = false
-                        // this.form.code = (Math.random()*1000000).toFixed(0)
-                        sendCodeApi({phone:this.form.phone})
                         this.sendCode()
+                        // this.form.code = (Math.random()*1000000).toFixed(0)
+                        sendCodeApi({phone:this.form.phone}).then(res=>{
+                            console.log(res)
+                            if (String(res.code) === '1') {
+                                this.$message({
+                                    showClose: true,
+                                    message: res.data,
+                                    type: 'success'
+                                });
+                            }else {
+                                this.$message({
+                                    showClose: true,
+                                    message: res.msg,
+                                    type: 'warning'
+                                });
+                            }
+                        })
+
                     }else{
                         this.msgFlag = true
                     }
