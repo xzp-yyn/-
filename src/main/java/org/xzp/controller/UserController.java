@@ -98,7 +98,7 @@ public class UserController {
      */
     public String LockIP(HttpServletRequest request, Long phone){
         String addr = request.getRemoteAddr();
-        String LockIPkey="Lockip:"+phone;
+        String LockIPkey="Lockip:"+phone.toString();
         String protectkey="phone:protect";
 
         if(template.hasKey(LockIPkey)){
@@ -106,11 +106,12 @@ public class UserController {
         }
         if(!template.hasKey(protectkey)){
             template.opsForValue().increment(protectkey);
-            template.expire(protectkey, PROTECT_CODE_EXPIRE_SECONDS,TimeUnit.DAYS);
+            template.expire(protectkey, PROTECT_CODE_EXPIRE_SECONDS,TimeUnit.HOURS);
             return "";
         }
         template.opsForValue().increment(protectkey);
-        if(Integer.parseInt((String) template.opsForValue().get(protectkey))>3){
+        Integer protectkey_value = (Integer) template.opsForValue().get(protectkey);
+        if( ((protectkey_value))>3){
             template.opsForValue().set(LockIPkey,addr);
             template.expire(LockIPkey,LOCK_IP_EXPIRE_SECONDS, TimeUnit.HOURS);
             return "您已经访问超过3次";

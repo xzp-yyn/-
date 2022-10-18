@@ -6,6 +6,9 @@ import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cache.CacheManager;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.xzp.common.R;
@@ -33,6 +36,9 @@ import java.util.stream.Collectors;
 @RequestMapping("/setmeal")
 public class SetmealController {
 
+    @Autowired
+    private CacheManager manager;
+
     @Value("${ruiji.dishimg}")
     private String baseurl;
 
@@ -46,6 +52,7 @@ public class SetmealController {
     private SetmealDishService dishService;
 
 
+    @Cacheable(value = "setmealCache",key ="#pageSize",condition = "#page!=null")
     @GetMapping("/page")
     public R<Page> getallSetmeal(Integer page,Integer pageSize,String name){
         LambdaQueryWrapper<Setmeal> wrapper = new LambdaQueryWrapper<>();
@@ -67,6 +74,7 @@ public class SetmealController {
     }
 
     @PostMapping("/status/{s}")
+    @CacheEvict(value = "setmealCache",key = "10")
     public R<String> statuschanged(@PathVariable("s")int s, Long[] ids){
         List<Setmeal> setmeals = new ArrayList<>();
         Setmeal one=new Setmeal();
@@ -81,11 +89,13 @@ public class SetmealController {
     }
 
     @PostMapping
+    @CacheEvict(value = "setmealCache",key = "10")
     public R<String> saveandFlavor(@RequestBody SetmealDto setmealDto){
         setmealService.save(setmealDto);
         return R.success("添加套餐成功！");
     }
 
+    @Cacheable(value = "setmealCache",key = "#id",unless = "#result==null")
     @GetMapping("/{id}")
     public R<SetmealDto> editdish(@PathVariable("id") Long id){
         SetmealDto setmealDto = setmealService.getmealdto(id);
@@ -94,6 +104,7 @@ public class SetmealController {
 
     @DeleteMapping
     @Transactional
+    @CacheEvict(value = "setmealCache",key = "10")
     public R<String> deletedish(Long[] ids){
         List<Long> longs = Arrays.asList(ids);
         for (Long item:
@@ -110,12 +121,14 @@ public class SetmealController {
     }
 
     @PutMapping
+    @CacheEvict(value = "setmealCache",allEntries = true)
     public R<String> updateSetmeal(@RequestBody SetmealDto setmealDto){
         setmealService.UpdateSetAndDish(setmealDto);
         return R.success("更新成功！");
     }
 
     @GetMapping("/list")
+    @Cacheable(value = "dish",key = "#setmeal.categoryId",unless = "#result==null")
     public R<List<SetmealDto>> listsetmealdto(Setmeal setmeal){
         LambdaQueryWrapper<Setmeal> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.eq(setmeal.getCategoryId()!=null,Setmeal::getCategoryId,setmeal.getCategoryId());

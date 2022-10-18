@@ -9,6 +9,7 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.web.bind.annotation.*;
 import org.xzp.common.R;
 import org.xzp.entity.Category;
+import org.xzp.entity.Setmeal;
 import org.xzp.service.CategoryService;
 
 import java.util.List;
@@ -24,8 +25,10 @@ import java.util.concurrent.TimeUnit;
 public class CategoryController {
 
     private static String key="category:1";
+    private static String key2="category:2";
     @Autowired
     private CategoryService categoryService;
+
 
     @Autowired
     private RedisTemplate<String,Object> template;
@@ -85,5 +88,19 @@ public class CategoryController {
         return R.success(list);
     }
 
+    //获取套餐分类
+    @GetMapping(value = "/list",params = {"type","page","pageSize"})
+    public R<List> setmeallist(int type,int page,Integer pageSize){
+        List<Category> list=null;
+        list = (List<Category>) template.opsForValue().get(key2);
+        if(list!=null){
+            return R.success(list);
+        }
+        LambdaQueryWrapper<Category> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(Category::getType,type);
+        list = categoryService.list(wrapper);
+        template.opsForValue().set(key2,list,120, TimeUnit.MINUTES);
+        return R.success(list);
+    }
 
 }
