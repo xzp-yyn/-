@@ -46,7 +46,6 @@ public class OrdersServiceImpl extends ServiceImpl<OrdersMapper, Orders> impleme
         User user = userService.getById(userId);
         //得到地址
         Address address = addressService.getById(orders.getAddressBookId());
-
         if(address==null){
             throw new RuntimeException();
         }

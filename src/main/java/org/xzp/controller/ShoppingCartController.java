@@ -1,6 +1,8 @@
 package org.xzp.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.xzp.common.FillThreadLocal;
@@ -17,17 +19,23 @@ import java.util.List;
  */
 @RestController
 @RequestMapping("/shoppingCart")
+@Api(tags = "购物车相关接口")
 public class ShoppingCartController {
 
     @Autowired
     private ShoppingCartService cartService;
 
     @GetMapping("/list")
+    @ApiOperation("获取购物车所有")
     public R<List> cart(){
-        List<ShoppingCart> list = cartService.list();
+        Long user_id = FillThreadLocal.getvalue();
+        LambdaQueryWrapper<ShoppingCart> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(ShoppingCart::getUserId,user_id);
+        List<ShoppingCart> list = cartService.list(wrapper);
         return R.success(list);
     }
     @PostMapping("/add")
+    @ApiOperation("添加到购物车")
     public R<ShoppingCart> add(@RequestBody ShoppingCart shoppingCart){
         //没有提交user_id以及number
         Long userId = FillThreadLocal.getvalue();
@@ -59,6 +67,7 @@ public class ShoppingCartController {
     }
 
     @DeleteMapping("/clean")
+    @ApiOperation("清空购物车")
     public R<String> clean(){
         LambdaQueryWrapper<ShoppingCart> wrapper = new LambdaQueryWrapper<>();
         wrapper.eq(ShoppingCart::getUserId,FillThreadLocal.getvalue());
@@ -67,6 +76,7 @@ public class ShoppingCartController {
     }
 
     @PostMapping("/sub")
+    @ApiOperation("购物车数量减")
     public R<String> releaseone(@RequestBody ShoppingCart shoppingCart){
         LambdaQueryWrapper<ShoppingCart> wrapper = new LambdaQueryWrapper<>();
         wrapper.eq(ShoppingCart::getUserId,FillThreadLocal.getvalue());

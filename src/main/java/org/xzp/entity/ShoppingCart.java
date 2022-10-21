@@ -6,6 +6,8 @@ import com.baomidou.mybatisplus.annotation.TableField;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import java.io.Serializable;
 import java.math.BigDecimal;
@@ -21,6 +23,7 @@ import java.util.Date;
  * 购物车
  */
 @Data
+@ApiModel("购物车")
 public class ShoppingCart implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -28,33 +31,40 @@ public class ShoppingCart implements Serializable {
     @JsonSerialize(using = ToStringSerializer.class)
     private Long id;
 
-    //名称
+
+    @ApiModelProperty("菜品名称")
     private String name;
 
-    //用户id
+
+    @ApiModelProperty("用户id")
     @JsonSerialize(using = ToStringSerializer.class)
     private Long userId;
 
-    //菜品id
+    @ApiModelProperty("菜品id")
     @JsonSerialize(using = ToStringSerializer.class)
     private Long dishId;
 
-    //套餐id
+    @ApiModelProperty("套餐id")
     @JsonSerialize(using = ToStringSerializer.class)
     private Long setmealId;
 
-    //口味
+
+    @ApiModelProperty("口味")
     private String dishFlavor;
 
-    //数量
+
+    @ApiModelProperty("数量")
     private Integer number;
 
-    //金额
+
+    @ApiModelProperty("单份金额")
     private BigDecimal amount;
 
-    //图片
+
+    @ApiModelProperty("图片")
     private String image;
 
+    @ApiModelProperty("创建时间")
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date createTime;
 }

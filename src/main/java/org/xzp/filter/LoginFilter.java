@@ -28,7 +28,11 @@ public class LoginFilter implements Filter {
             "/front/**",
             "/user/login",
             "/user/loginout",
-            "/user/sendCode"
+            "/user/sendCode",
+            "/doc.html",
+            "/webjars/**",
+            "/swagger-resources",
+            "/v2/api-docs"
     };
 
     private AntPathMatcher pathMatcher=new AntPathMatcher();

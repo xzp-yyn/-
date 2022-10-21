@@ -1,6 +1,8 @@
 package org.xzp.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +30,7 @@ import java.util.concurrent.TimeUnit;
 @RestController
 @RequestMapping("/user")
 @Slf4j
+@Api(tags = "用户相关接口")
 public class UserController {
     @Autowired
     private UserService service;
@@ -42,6 +45,7 @@ public class UserController {
     private RedisTemplate<String,Object> template;
 
     @PostMapping("/sendCode")
+    @ApiOperation("获得验证码")
     public R<String> sendCode(@RequestBody User user, HttpSession session,HttpServletRequest request){
         Long phone = Long.valueOf(user.getPhone());
         String code = LoginCodeUtils.generateCode(4);
@@ -63,6 +67,7 @@ public class UserController {
     }
 
     @PostMapping("/login")
+    @ApiOperation("用户登录")
     public R<User> login(@RequestBody Map map,HttpSession session){
         String phone = (String) map.get("phone");
         String code = (String) map.get("code");
@@ -85,6 +90,7 @@ public class UserController {
         return R.error("验证失败！");
     }
     @PostMapping("/loginout")
+    @ApiOperation("用户退出登录")
     public R<String> loginout(HttpSession session){
         session.removeAttribute("user");
         return R.success("退出登录");

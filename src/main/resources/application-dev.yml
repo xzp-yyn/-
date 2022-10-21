@@ -10,7 +10,7 @@ spring:
     database: 0
     port: 6379
     password: 201014
-    host: 192.168.107.214
+    host: 192.168.107.215
   shardingsphere:
     datasource:
       names:

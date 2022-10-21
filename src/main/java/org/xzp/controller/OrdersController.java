@@ -3,6 +3,8 @@ package org.xzp.controller;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.time.DateFormatUtils;
 import org.springframework.beans.BeanUtils;
@@ -28,6 +30,7 @@ import java.util.stream.Collectors;
  */
 @RestController
 @RequestMapping("/order")
+@Api(tags = "订单相关接口")
 public class OrdersController {
 
     @Autowired
@@ -38,11 +41,13 @@ public class OrdersController {
 
 
     @PostMapping("/submit")
+    @ApiOperation("下单")
     public R<String> saveOrder(@RequestBody Orders orders){
         orderService.submit(orders);
         return R.success("下单成功！");
     }
     @GetMapping("/userPage")
+    @ApiOperation("获取用户所有订单")
     public R<Page<OrdersDto>> userpage(int page, Integer pageSize){
         Long userId = FillThreadLocal.getvalue();
         LambdaQueryWrapper<Orders> wrapper = new LambdaQueryWrapper<>();
@@ -60,8 +65,6 @@ public class OrdersController {
             BeanUtils.copyProperties(item,ordersDto);
             return ordersDto;
         }).collect(Collectors.toList());
-        LambdaQueryWrapper<OrdersDto> wrapper1 = new LambdaQueryWrapper<>();
-        wrapper1.orderByDesc(OrdersDto::getCheckoutTime);
         Page<Orders> ordersPage = orderService.page(new Page<>(page, pageSize), wrapper);
         Page<OrdersDto> dtoPage = new Page<>();
         BeanUtils.copyProperties(ordersPage,dtoPage,"records");
@@ -70,6 +73,7 @@ public class OrdersController {
     }
 
     @GetMapping("/page")
+    @ApiOperation("根据条件查询所有订单")
     public R<Page> ordershow(int page, Integer pageSize, Long number, String beginTime,
                              String endTime){
         Page<Orders> page1 = new Page<>(page, pageSize);
@@ -83,6 +87,7 @@ public class OrdersController {
     }
 
     @PutMapping
+    @ApiOperation("更新订单状态")
     public R<String> changeStatus(@RequestBody Orders orders){
         orderService.updateById(orders);
         return R.success("状态更新完成！");

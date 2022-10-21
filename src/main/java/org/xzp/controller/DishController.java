@@ -3,11 +3,16 @@ package org.xzp.controller;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.mysql.cj.x.protobuf.MysqlxCrud;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import lombok.val;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
@@ -35,6 +40,7 @@ import java.util.stream.Collectors;
  */
 @RestController
 @RequestMapping("/dish")
+@Api(tags = "菜品相关接口")
 public class DishController {
 
     @Value("${ruiji.dishimg}")
@@ -53,6 +59,8 @@ public class DishController {
     private RedisTemplate<String,Object> template;
 
     @GetMapping("/page")
+    @ApiOperation("分页获取所有菜品")
+    @Cacheable(value = "dish",key = "#methodName",condition = "#result!=null")
     public R<Page> dishs(int page, @RequestParam("pageSize")int pagesize,String name){
         LambdaQueryWrapper<Dish> wrapper = new LambdaQueryWrapper<>();
         wrapper.like(StringUtils.isNotEmpty(name),Dish::getName,name);
@@ -75,6 +83,8 @@ public class DishController {
 
     @PostMapping("/status/{s}")
     @Transactional
+    @ApiOperation("改变菜品状态")
+    @CacheEvict(value = "dish",allEntries = true)
     public R<String> statuschanged(@PathVariable("s")int s,Long[] ids){
         List<Dish> dishs = new ArrayList<>();
         Dish one=new Dish();
@@ -82,40 +92,32 @@ public class DishController {
              ids) {
             one = service.getById(id);
             one.setStatus(s);
-            String key="dish:"+one.getCategoryId()+":1";
-            template.delete(key);
             dishs.add(one);
         }
         service.updateBatchById(dishs);
-
         return R.success("修改状态成功！");
     }
 
     @PostMapping
+    @ApiOperation("添加菜品")
+    @CacheEvict(value = "dish",allEntries = true)
     public R<String> saveandFlavor(@RequestBody DishDto dishDto){
         service.saveAndFlavor(dishDto);
-        String key="dish:"+dishDto.getCategoryId()+":1";
-        template.delete(key);
         return R.success("添加菜品成功！");
     }
 
     @GetMapping("/{id}")
+    @ApiOperation("获取更新的菜品")
     public R<DishDto> editdish(@PathVariable("id") Long id){
         DishDto flavor = service.getByIdFlavor(id);
         return R.success(flavor);
     }
 
     @GetMapping("/list")
+    @ApiOperation("获取某一菜品")
+    @Cacheable(value = "dish",key = "#dish.categoryId",unless = "#result==null")
     public R<List<DishDto>> dishCategory(Dish dish){
         List<DishDto> dishDtos=null;
-        String key="dish:"+dish.getCategoryId()+":"+dish.getStatus();
-        //首先查询redis
-        dishDtos= (List<DishDto>) template.opsForValue().get(key);
-        if(dishDtos!=null){
-            //如果有直接返回
-            return R.success(dishDtos);
-        }
-        //没有数据就从数据库查并放到缓存，设置过期时间
         LambdaQueryWrapper<Dish> wrapper = new LambdaQueryWrapper<>();
         wrapper.eq(dish.getCategoryId()!=null,Dish::getCategoryId,dish.getCategoryId());
         wrapper.eq(Dish::getStatus,1);
@@ -130,35 +132,35 @@ public class DishController {
             dishDto.setFlavors(dishFlavors);
             return dishDto;
         }).collect(Collectors.toList());
-        template.opsForValue().set(key,dishDtos,120,TimeUnit.MINUTES);
         return R.success(dishDtos);
     }
 
     @DeleteMapping
-    @Transactional
+    @ApiOperation("删除菜品")
+    @CacheEvict(value = "dish",allEntries = true)
     public R<String> deletedish(Long[] ids){
         List<Long> longs = Arrays.asList(ids);
         for (Long item:
              longs) {
             Dish dish = service.getById(item);
-            String image = dish.getImage();
-            String url=baseurl+image;
-            String key="dish:"+dish.getCategoryId()+":1";
-            template.delete(key);
-            File file = new File(url);
-            if(file.exists()){
-                file.delete();
+            if (dish != null) {
+                String image = dish.getImage();
+                String url = baseurl + image;
+                File file = new File(url);
+                if (file.exists()) {
+                    file.delete();
                 }
             }
+        }
         service.removeBatchByIds(longs);
         return R.success("删除成功！");
         }
 
     @PutMapping
+    @ApiOperation("更新菜品")
+    @CacheEvict(value = "dish",allEntries = true)
     public R<String> update(@RequestBody DishDto dishDto){
         service.updateAndFlavor(dishDto);
-        String key="dish:"+dishDto.getCategoryId()+":1";
-        template.delete(key);
         return R.success("更新成功！");
     }
 }

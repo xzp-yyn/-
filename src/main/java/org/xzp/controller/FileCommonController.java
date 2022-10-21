@@ -1,5 +1,6 @@
 package org.xzp.controller;
 
+import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -24,6 +25,7 @@ import java.util.UUID;
  */
 @RestController
 @RequestMapping("/common")
+@Api(tags = "文件上传下载相关接口")
 public class FileCommonController {
 
     @Value("${ruiji.dishimg}")

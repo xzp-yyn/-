@@ -2,6 +2,8 @@ package org.xzp.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,6 +36,7 @@ import java.util.stream.Collectors;
  */
 @RestController
 @RequestMapping("/setmeal")
+@Api(tags = "套餐相关接口")
 public class SetmealController {
 
     @Autowired
@@ -52,8 +55,9 @@ public class SetmealController {
     private SetmealDishService dishService;
 
 
-    @Cacheable(value = "setmealCache",key ="#pageSize",condition = "#page!=null")
+    @Cacheable(value = "setmealCache",key ="#methodName",condition = "#result!=null")
     @GetMapping("/page")
+    @ApiOperation("分页获取套餐")
     public R<Page> getallSetmeal(Integer page,Integer pageSize,String name){
         LambdaQueryWrapper<Setmeal> wrapper = new LambdaQueryWrapper<>();
         wrapper.like(StringUtils.isNotEmpty(name),Setmeal::getName,name);
@@ -74,7 +78,8 @@ public class SetmealController {
     }
 
     @PostMapping("/status/{s}")
-    @CacheEvict(value = "setmealCache",key = "10")
+    @CacheEvict(value = "setmealCache",allEntries = true)
+    @ApiOperation("修改状态")
     public R<String> statuschanged(@PathVariable("s")int s, Long[] ids){
         List<Setmeal> setmeals = new ArrayList<>();
         Setmeal one=new Setmeal();
@@ -89,7 +94,8 @@ public class SetmealController {
     }
 
     @PostMapping
-    @CacheEvict(value = "setmealCache",key = "10")
+    @CacheEvict(value = "setmealCache",allEntries = true)
+    @ApiOperation("添加套餐")
     public R<String> saveandFlavor(@RequestBody SetmealDto setmealDto){
         setmealService.save(setmealDto);
         return R.success("添加套餐成功！");
@@ -97,6 +103,7 @@ public class SetmealController {
 
     @Cacheable(value = "setmealCache",key = "#id",unless = "#result==null")
     @GetMapping("/{id}")
+    @ApiOperation("获得要修改的套餐")
     public R<SetmealDto> editdish(@PathVariable("id") Long id){
         SetmealDto setmealDto = setmealService.getmealdto(id);
         return R.success(setmealDto);
@@ -104,7 +111,8 @@ public class SetmealController {
 
     @DeleteMapping
     @Transactional
-    @CacheEvict(value = "setmealCache",key = "10")
+    @CacheEvict(value = "setmealCache",allEntries = true)
+    @ApiOperation("删除套餐")
     public R<String> deletedish(Long[] ids){
         List<Long> longs = Arrays.asList(ids);
         for (Long item:
@@ -122,12 +130,14 @@ public class SetmealController {
 
     @PutMapping
     @CacheEvict(value = "setmealCache",allEntries = true)
+    @ApiOperation("更新套餐")
     public R<String> updateSetmeal(@RequestBody SetmealDto setmealDto){
         setmealService.UpdateSetAndDish(setmealDto);
         return R.success("更新成功！");
     }
 
     @GetMapping("/list")
+    @ApiOperation("套餐详情")
     @Cacheable(value = "dish",key = "#setmeal.categoryId",unless = "#result==null")
     public R<List<SetmealDto>> listsetmealdto(Setmeal setmeal){
         LambdaQueryWrapper<Setmeal> queryWrapper = new LambdaQueryWrapper<>();

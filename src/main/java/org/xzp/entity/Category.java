@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.annotation.TableField;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
+import io.swagger.annotations.ApiModel;
 import lombok.Data;
 import lombok.extern.jackson.Jacksonized;
 
@@ -19,6 +20,7 @@ import java.util.Date;
  * @Version 1.0
  */
 @Data
+@ApiModel("分类")
 public class Category implements Serializable {
     private static final long serialVersionUID = 1L;
 

@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
+import io.swagger.annotations.ApiModel;
 import lombok.Data;
 import org.springframework.core.serializer.Serializer;
 
@@ -17,6 +18,7 @@ import java.util.Date;
  * @Version 1.0
  */
 @Data
+@ApiModel("员工")
 public class Employee implements Serializable {
     private static final long serialVersionUID = 1L;
 
