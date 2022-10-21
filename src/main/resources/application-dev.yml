@@ -53,4 +53,4 @@ mybatis-plus:
     db-config:
       id-type: assign_id
 ruiji:
-  dishimg: /usr/local/ruiji-img/
+  dishimg: /usr/local/ruiji-img
