@@ -18,6 +18,8 @@ public class RuijiApplication
 {
     public static void main( String[] args )
     {
-        SpringApplication.run(RuijiApplication.class,args);
+        SpringApplication application = new SpringApplication(RuijiApplication.class);
+        application.setAllowBeanDefinitionOverriding(true);
+        application.run(args);
     }
 }
