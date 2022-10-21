@@ -1,8 +1,6 @@
 server:
   port: 8080
 spring:
-  main:
-    allow-bean-definition-overriding: true
   application:
     name: ruiji
   cache:
@@ -39,6 +37,8 @@ spring:
       sql:
         show: true
     #允许bean定义覆盖
+  main:
+    allow-bean-definition-overriding: true
   
   jackson:
     date-format: yyyy-MM-dd HH:mm:ss
