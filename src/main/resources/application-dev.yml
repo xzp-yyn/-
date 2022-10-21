@@ -53,4 +53,4 @@ mybatis-plus:
     db-config:
       id-type: assign_id
 ruiji:
-  dishimg: D:\Ruigi\src\main\resources\static\common\
+  dishimg: /usr/local/ruiji-img/
