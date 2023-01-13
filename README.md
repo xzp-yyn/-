@@ -1,4 +1,4 @@
-# Ruggie
+# TakeOut Platform 
 
 #### 介绍
 外卖平台项目
@@ -12,6 +12,7 @@ vue+elementUI
 nginx
 redis
 git
+项目展示：
 
 
 #### 安装教程
