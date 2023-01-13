@@ -31,14 +31,14 @@ git
 ![订单信息](showimgs/%E8%AE%A2%E5%8D%95%E4%BF%A1%E6%81%AF.png)
 
 
-#### 安装教程
+# 安装教程
 
 1.  准备环境jdk11,maven3.6+,tomcat,git
 2.  使用git工具克隆git@gitee.com:xue-zhanpeng/ruiji.git
 3.  在yml文件更改数据库配置，redis地址
 4.  使用maven编译打包，运行jar
 
-#### 使用说明
+# 使用说明
 
 1.  如果出现打包不成功，检查maven配置是否有本地仓库，以及镜像是否是阿里云
 2.  在linux上部署jdk8编译是不能成功的
