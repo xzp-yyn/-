@@ -12,7 +12,23 @@ vue+elementUI
 nginx
 redis
 git
-项目展示：
+项目页面：
+## 前端登录页
+![前端登录页](showimgs/%E5%89%8D%E7%AB%AF%E7%99%BB%E5%BD%95.png)
+## 前端首页
+![前端首页](showimgs/%E5%89%8D%E7%AB%AF%E8%8F%9C%E5%93%81%E9%A1%B5%E9%9D%A2.png)
+## 地址信息
+![地址信息](showimgs/%E5%9C%B0%E5%9D%80%E7%AE%A1%E7%90%86.png)
+## 员工管理
+![员工管理](showimgs/%E5%91%98%E5%B7%A5%E4%BF%A1%E6%81%AF.png)
+## 分类管理
+![分类管理](showimgs/%E5%88%86%E7%B1%BB%E7%AE%A1%E7%90%86.png)
+## 套餐管理
+![套餐管理](showimgs/%E5%A5%97%E9%A4%90%E7%AE%A1%E7%90%86.png)
+## 菜品管理
+![菜品管理](showimgs/%E8%8F%9C%E5%93%81%E7%AE%A1%E7%90%86.png)
+## 订单信息
+![订单信息](showimgs/%E8%AE%A2%E5%8D%95%E4%BF%A1%E6%81%AF.png)
 
 
 #### 安装教程
