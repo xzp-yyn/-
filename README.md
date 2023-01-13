@@ -12,7 +12,7 @@ vue+elementUI
 nginx
 redis
 git
-项目页面：
+# 项目页面：
 ## 前端登录页
 ![前端登录页](showimgs/%E5%89%8D%E7%AB%AF%E7%99%BB%E5%BD%95.png)
 ## 前端首页
