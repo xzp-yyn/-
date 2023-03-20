@@ -1,4 +1,12 @@
-![Issue Num](https://img.shields.io/badge/dynamic/json?color=9cf&label=issues&query=%24.statistics.counts.opened&suffix=%20opened&url=https%3A%2F%2Fjihulab.com%2Fapi%2Fv4%2Fprojects%2F13953%2Fissues_statistics)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<img src="https://img.shields.io/badge/Author-xzp-red" alt="author" />&nbsp;&nbsp;&nbsp;<img src="https://img.shields.io/bitbucket/issues/xzp-yyn/Registration-online" alt="issues" />&nbsp;&nbsp;&nbsp;
+<img src="https://img.shields.io/github/last-commit/xzp-yyn/Registration-online" alt="last-commit" />&nbsp;&nbsp;&nbsp;
+<img src="https://img.shields.io/badge/license-AFL--3.0-brightgreen" alt="license" />&nbsp;&nbsp;&nbsp;
+<img src="https://img.shields.io/badge/release-v2.0.0-success" alt="release" />  
+
+
+
+
 # TakeOut Platform 
 
 #### 介绍
