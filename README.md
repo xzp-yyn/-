@@ -1,3 +1,4 @@
+![Issue Num](https://img.shields.io/badge/dynamic/json?color=9cf&label=issues&query=%24.statistics.counts.opened&suffix=%20opened&url=https%3A%2F%2Fjihulab.com%2Fapi%2Fv4%2Fprojects%2F13953%2Fissues_statistics)
 # TakeOut Platform 
 
 #### 介绍
