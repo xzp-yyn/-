@@ -4,6 +4,13 @@
 <img src="https://img.shields.io/badge/license-AFL--3.0-brightgreen" alt="license" />&nbsp;&nbsp;&nbsp;
 <img src="https://img.shields.io/badge/release-v2.0.0-success" alt="release" />  
 
+&nbsp;&nbsp;&nbsp;&nbsp;<img src="https://img.shields.io/github/package-json/dependency-version/Ritusan/color-library/vue?color=green" alt="vue" />
+<img src="https://img.shields.io/badge/Maven-v3.6.1-brightgreen" alt="Maven" />
+<img src="https://img.shields.io/badge/SpringBoot-v2.5.4-blue" alt="SpringBoot" />
+<img src="https://img.shields.io/badge/Redis-v5.0.7-blue" alt="Redis" /> 
+<img src="https://img.shields.io/badge/Mysql-v5.7-brightgreen" alt="Mysql" />
+<img src="https://img.shields.io/badge/Mybatisplus-v3.5.0-brightgreen" alt="Mybatis-plus" /> 
+
 
 
 
@@ -13,14 +20,6 @@
 外卖平台项目
 基于O2O模式，为用户提供点餐服务。项目前端系统提供用户登录，菜品展示和用户点餐，下单。项目后端系统提供给管理员和员工对菜品，套餐的操作。旨在方便用户点餐和商家管理商品
 
-#### 软件架构
-springboot
-mysql
-mybatis-plus
-vue+elementUI
-nginx
-redis
-git
 # 项目页面：
 ## 前端登录页
 ![前端登录页](showimgs/%E5%89%8D%E7%AB%AF%E7%99%BB%E5%BD%95.png)
